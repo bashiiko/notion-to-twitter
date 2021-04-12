@@ -1,16 +1,7 @@
+# https://gammasoft.jp/blog/schdule-running-python-script-by-serverless/
+
 from notion.client import NotionClient
 import csv
-
-# Obtain the `token_v2` value by inspecting your browser cookies on a logged-in (non-guest) session on Notion.so
-token = "1d37aa2417452b968dc7604f7a5bb4e5deae7fb6e479a241bf5a4d739fa60ead23ffd672d1e57156c5cfd3f5f063af521dc910d0c3ff0efcbb64aea9dd1a0d27d8bb28f1abd1cf531d5d2a23119d"
-client = NotionClient(token_v2=token)
-
-# Replace this URL with the URL of the page you want to edit
-url = "https://www.notion.so/d01b5e64a9534cd78b2cbdaf1d8cd685?v=47bb3fe5351345a8bb00f61516378b7a"
-page = client.get_block(url)
-
-# リストを取得
-cv = client.get_collection_view(url)
 
 def get_title_list(file_name):
     with open(file_name) as f:
@@ -35,8 +26,15 @@ def output_twitter(page, title, tag, description):
     print('tag: {0}'.format('、'.join(tag)))
     print('コメント: {0}'.format(description))
 
+client = NotionClient(token_v2=token)
 
+page = client.get_block(url)
+
+# リストを取得
+cv = client.get_collection_view(url)
 file_name = 'title_list.csv'
+title_list = get_title_list(file_name)
+
 # リストの一覧を出力
 for row in cv.collection.get_rows():
     title, tag, description = get_item_from_notion(row)
