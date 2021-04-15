@@ -1,7 +1,9 @@
 # https://gammasoft.jp/blog/schdule-running-python-script-by-serverless/
-
 from notion.client import NotionClient
 import csv
+
+from google.cloud import storage
+
 
 def get_title_list(file_name):
     with open(file_name) as f:
@@ -26,18 +28,32 @@ def output_twitter(page, title, tag, description):
     print('tag: {0}'.format('、'.join(tag)))
     print('コメント: {0}'.format(description))
 
-client = NotionClient(token_v2=token)
+def main():
 
-page = client.get_block(url)
+    token = "1d37aa2417452b968dc7604f7a5bb4e5deae7fb6e479a241bf5a4d739fa60ead23ffd672d1e57156c5cfd3f5f063af521dc910d0c3ff0efcbb64aea9dd1a0d27d8bb28f1abd1cf531d5d2a23119d"
+    client = NotionClient(token_v2=token)
+
+    url = "https://www.notion.so/d01b5e64a9534cd78b2cbdaf1d8cd685?v=47bb3fe5351345a8bb00f61516378b7a"
+    page = client.get_block(url)
+
+    bucket_name = "title_list"
+    source_blob_name = "title_list.csv"
+
+    storage_client = storage.Client()
+
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(source_blob_name)
+
+    print(blob.name)
 
 # リストを取得
-cv = client.get_collection_view(url)
-file_name = 'title_list.csv'
-title_list = get_title_list(file_name)
+# cv = client.get_collection_view(url)
+# file_name = 'title_list.csv'
+# title_list = get_title_list(file_name)
 
-# リストの一覧を出力
-for row in cv.collection.get_rows():
-    title, tag, description = get_item_from_notion(row)
-    if title not in title_list:
-        output_twitter(page, title, tag, description)
-        add_title_list(file_name, title)
+# # リストの一覧を出力
+# for row in cv.collection.get_rows():
+#     title, tag, description = get_item_from_notion(row)
+#     if title not in title_list:
+#         output_twitter(page, title, tag, description)
+#         add_title_list(file_name, title)
