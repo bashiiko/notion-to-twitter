@@ -1,0 +1,3 @@
+notion
+google-cloud-storage
+tweepy
