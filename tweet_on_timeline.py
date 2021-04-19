@@ -17,14 +17,5 @@ class Twitter():
         self.auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
     def tweet(self, message):
-        # キーワードからツイートを取得
         api = tweepy.API(self.auth)
-        tweets = api.search(q=['Python'], count=10)
-        tweets = api.user_timeline(id = 'bashiiiiko')
-        #tweets = api.home_timeline()
-        for tweet in tweets:
-            print('-----------------')
-            print(tweet.text)
-
-        # 好きな言葉をツイート
-        #api.update_status("Pythonから投稿テスト")
+        api.update_status(message)
